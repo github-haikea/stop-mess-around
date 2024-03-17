@@ -9,70 +9,33 @@
 -->
 <template>
   <div class="stop-mess-around-content">
-    <el-dialog
-      append-to-body
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      :title="info.title"
-      class="stop-mess-around-content_dialog-class"
-      :lock-scroll="true"
-      :visible.sync="dialogVisible"
-      width="60%"
-      :show-close="false"
-    >
-      <div
-        class="tip-info"
-        v-html="info.tip"
-      />
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
+    <el-dialog append-to-body :close-on-click-modal="false" :close-on-press-escape="false" :title="info.title"
+      class="stop-mess-around-content_dialog-class" :lock-scroll="true" :visible.sync="dialogVisible" width="60%"
+      :show-close="false">
+      <div class="tip-info" v-html="info.tip" />
+      <div slot="footer" class="dialog-footer">
         <div class="footer_tip">
           阅读励志语录，想想自己的梦想和想要的生活。
         </div>
-        <div
-          v-if="closeInterVal"
-          class="footer_tip"
-        >
+        <div v-if="closeInterVal" class="footer_tip">
           如果未点击休息一下，将在倒计时后关闭页面: {{ durationFont }}
         </div>
         <div>
-          <el-button
-            type="success"
-            @click="handleClose"
-          >
+          <el-button type="success" @click="handleClose">
             {{ info.confirmBtn }}
           </el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="changeTip"
-          >
+          <el-button type="primary" size="small" @click="changeTip">
             更新励志语录
           </el-button>
-          <el-button
-            type="danger"
-            size="mini"
-            @click="showRestFn"
-          >
+          <el-button type="danger" size="mini" @click="showRestFn">
             休息一下
           </el-button>
         </div>
         <div v-if="showRest">
-          <el-select
-            v-model="restTime"
-            class="select-margin"
-            popper-class="stop-mess-around-dropdown"
-            placeholder="请选择休息时间"
-          >
-            <el-option
-              v-for="item in restTimeArr"
-              :key="item.time"
-              class="stop-mess-around-option"
-              :label="item.label"
-              :value="item.time"
-            />
+          <el-select v-model="restTime" class="select-margin" popper-class="stop-mess-around-dropdown"
+            placeholder="请选择休息时间">
+            <el-option v-for="item in restTimeArr" :key="item.time" class="stop-mess-around-option" :label="item.label"
+              :value="item.time" />
           </el-select>
           <el-button @click="showRestFn">
             取消
@@ -81,17 +44,27 @@
             确定
           </el-button>
         </div>
+        <div v-if="showRest" style="margin: auto;">
+          <el-radio-group v-model="restTime">
+            <el-radio-button label="5分钟"></el-radio-button>
+            <el-radio-button label="10分钟"></el-radio-button>
+            <el-radio-button label="15分钟"></el-radio-button>
+            <el-radio-button label="20分钟"></el-radio-button>
+            <el-radio-button label="30分钟"></el-radio-button>
+            <el-radio-button label="45分钟"></el-radio-button>
+            <el-radio-button label="60分钟"></el-radio-button>
+            <el-radio-button label="90分钟"></el-radio-button>
+            <el-radio-button label="2小时"></el-radio-button>
+          </el-radio-group>
+        </div>
+
       </div>
     </el-dialog>
     <!-- Github 仓库1s快速按钮 -->
     <LookCode1sVue />
     <!-- 右侧的摸鱼时长与摸鱼倒计时统计提醒 -->
-    <MessAroundRightTipVue
-      v-show="Setting.showRightTip !== 'close'"
-      :dialog-tip-visible="dialogVisible"
-      :statistics-info="statisticsInfo"
-      @getStatisticsMatch="getStatisticsMatch"
-    />
+    <MessAroundRightTipVue v-show="Setting.showRightTip !== 'close'" :dialog-tip-visible="dialogVisible"
+      :statistics-info="statisticsInfo" @getStatisticsMatch="getStatisticsMatch" />
   </div>
 </template>
 
@@ -125,13 +98,14 @@ export default {
     return {
       Setting: {},
       dialogVisible: false, // 展示提醒
-      showRest: false, // 展示休息时间选项
+      showRest: true, // 展示休息时间选项
       restTime: 5, // 休息时间默认值
       restTimeArr, // 休息时间默认数组
       item: null,
       index: 0,
       tableData: [],
       statisticsTime: [],
+      radio1: '15分钟',
       // 提醒的字段
       info: {
         title: '',
@@ -323,7 +297,8 @@ export default {
     },
     // 关闭页面
     closePage() {
-      chrome.runtime.sendMessage({ message: 'close-tab' })
+      //测试进度条时暂时注销
+      //chrome.runtime.sendMessage({ message: 'close-tab' })
     },
   },
 }
@@ -334,7 +309,6 @@ export default {
 .stop-mess-around-dropdown {
   z-index: 2147483647 !important;
 }
-
 </style>
 
 <style scoped>
@@ -342,6 +316,7 @@ export default {
 .stop-mess-around-content_dialog-class {
   z-index: 2147483600 !important;
 }
+
 .stop-mess-around-dropdown {
   z-index: 2147483647 !important;
 }
@@ -351,6 +326,7 @@ export default {
   width: 150px;
   margin-right: 20px;
 }
+
 .tip-info {
   white-space: pre-line;
   font-size: 20px;

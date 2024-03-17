@@ -13,6 +13,8 @@
 
 const path = require('path')
 const fs = require('fs')
+const AdmZip = require('adm-zip');
+const { log } = require('console');
 
 const { argv } = process
 const env = argv[2]
@@ -25,8 +27,11 @@ function run() {
   elementFont()
 }
 
+
+
 // 修改element的引用地址 使element icon在其他网站上可用
 function elementFont() {
+  console.log('elementFont')
   const elementPath = path.resolve(__dirname, './node_modules/element-ui/lib/theme-chalk/', 'index.css')
   let content = fs.readFileSync(elementPath).toString()
   // 替换匹配到的每个变量
@@ -43,6 +48,7 @@ function elementFont() {
 
 // 更改插件版本与描述
 function changeVersion() {
+  console.log('changeVersion')
   const VERSION = process.env.npm_package_version
   let DESCRIPTION = '减少摸鱼的时间和频率的浏览器插件：提醒你正在摸鱼，摸鱼的时候知道自己在摸鱼，提高我们上班和学习的效率，节省时间用于学习提升自己或者享受生活'
   let PLUGINNAME = 'stop-mess-around'
@@ -83,4 +89,20 @@ function updateFillBuilderYAML(option, manifestPath) {
 // 根据变量名构建一个正则，匹配对应模板中的变量表示
 function createReg(variable) {
   return new RegExp(`{{${variable}}}`, 'g')
+}
+
+//将生成的插件压缩包解压到当前目录下
+//当前只复制了谷歌浏览器版本！！！
+//注意测试时使用
+function copyAndExtractZip(sourcePath, destinationPath) {
+  console.log(sourcePath)
+  console.log(destinationPath)
+  // 删除 destinationPath 文件夹及其所有内容
+  if (fs.existsSync(destinationPath)) {
+    fs.rmSync(destinationPath, { recursive: true });
+  }
+
+  // 解压 zip 文件
+  const zip = new AdmZip(sourcePath,AdmZip.s);
+  zip.extractAllTo(destinationPath, true);
 }
